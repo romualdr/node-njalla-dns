@@ -59,6 +59,8 @@ const { login } = require('njalla-dns')
 | returns `Promise<void>` |  |
 | throws `Error('Unable to login')` | Incorrect credentials |
 
+------
+
 ### getDomains()
 
 Retrieves domains attached to the connected account
@@ -79,6 +81,8 @@ const { login, getDomains } = require('njalla-dns')
 | returns `Promise<string[]>` | An array of string containing your domains |
 | throws `Error('Not connected')` | You didn't use `login` before using this method |
 | throws `AxiosError()` | Underlying HTTP error |
+
+------
 
 ### getRecords(domain)
 
@@ -101,6 +105,8 @@ const { login, getRecords } = require('njalla-dns')
 | returns `Promise<Object[]>` | An array of records |
 | throws `Error('Not connected')` | You didn't use `login` before using this method |
 | throws `AxiosError()` | Underlying HTTP error |
+
+------
 
 ### add(domain, type, name, content [, ttl])
 
@@ -130,6 +136,8 @@ const { login, add } = require('njalla-dns')
 | returns `Promise<void>` |  |
 | throws `Error('Not connected')` | You didn't use `login` before using this method |
 | throws `AxiosError()` | Underlying HTTP error |
+
+------
 
 ### remove(domain, record)
 
@@ -163,6 +171,8 @@ const { login, getRecords, remove } = require('njalla-dns')
 | throws `Error('Not connected')` | You didn't use `login` before using this method |
 | throws `Error('Unable to find record [id]')` | You should give a record you retrieved from `getRecords()` |
 | throws `AxiosError()` | Underlying HTTP error |
+
+------
 
 ### update(domain, record, update)
 
