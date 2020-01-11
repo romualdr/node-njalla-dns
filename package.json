@@ -1,16 +1,24 @@
 {
   "name": "njalla-dns",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Manipulate your njalla domains programmatically",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "axios": "^0.19.1",
     "axios-cookiejar-support": "^0.5.1",
     "cheerio": "^1.0.0-rc.3"
+  },
+  "author": {
+    "name": "Romuald R. (romualdr)",
+    "url": "https://github.com/romualdr"
+  },
+  "license": "MIT",
+  "repository" :
+  {
+    "type" : "git",
+    "url" : "https://github.com/romualdr/node-njalla-dns.git"
   }
 }
