@@ -20,7 +20,7 @@ const { login, getDomains, add } = require('njalla-dns')
 
 ## Installation
 
-`npm -i njalla-dns`
+`npm i njalla-dns`
 
 
 ## Features
