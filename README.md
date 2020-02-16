@@ -1,4 +1,4 @@
-# node-njalla-api
+# node-njalla-dns
 
 Manipulate your njalla domains programmatically.
 
@@ -197,7 +197,7 @@ const { login, getRecords, update } = require('njalla-dns')
     const records = await getRecords('mydomain.io')
 
     // Update the www record
-    await update('mydomain.io', records.find((r) => r.name === 'www'), { content: '192.168.10.999' })
+    await update('mydomain.io', records.find((r) => r.name === 'www'), { content: '192.168.10.199' })
 })()
 ```
 
@@ -207,6 +207,31 @@ const { login, getRecords, update } = require('njalla-dns')
 | throws `Error('Not connected')` | You didn't use `login` before using this method |
 | throws `Error('Unable to find record [id]')` | You should give a record you retrieved from `getRecords()` |
 | throws `AxiosError()` | Underlying HTTP error |
+
+## Contributing
+
+Feel free to submit a pull request if you want to improve something, please proivide test suite as well if you change something.
+
+We use [AVA](https://github.com/avajs/ava) to run tests. Simply run `npm run test` to run the test suite.
+
+Njal.la calls are mocked. You can add the HTML file you want to use for the tests in `tests/mocks` folder.
+
+```javascript
+test('getRecords: should parse complex records ( like DKIM with ; )', async t => {
+    // We mock the signin page (mandatory)
+    await mockedClient.addMock(mockedClient.GET_NJALLA_URL('/signin/'), 'signin.html')
+
+    // We then mock the call we want with a static file (must be present in tests/mocks)
+    // Warning: AVA runs mocks asynchronously - so make sure to change domain if you want to avoid
+    // test and mocks clashing when running tests
+    await mockedClient.addMock(mockedClient.GET_NJALLA_DOMAIN_URL('dkim.io'), 'getRecords.dkim.html')
+
+    // Run your test here !
+    await dns.login('', '')
+    const records = await dns.getRecords('dkim.io')
+    t.truthy(records.find((r) => r.name === 'myrecord'), 'Record was not found')
+})
+```
 
 ## Motivations
 

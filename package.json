@@ -1,10 +1,10 @@
 {
   "name": "njalla-dns",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Manipulate your njalla domains programmatically",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "ava"
   },
   "dependencies": {
     "axios": "^0.19.1",
@@ -16,9 +16,16 @@
     "url": "https://github.com/romualdr"
   },
   "license": "MIT",
-  "repository" :
-  {
-    "type" : "git",
-    "url" : "https://github.com/romualdr/node-njalla-dns.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/romualdr/node-njalla-dns.git"
+  },
+  "devDependencies": {
+    "ava": "^3.3.0"
+  },
+  "ava": {
+    "files": [
+      "tests/lib/**"
+    ]
   }
 }
