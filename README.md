@@ -104,6 +104,7 @@ const { login, getRecords } = require('njalla-dns')
 |-----------|-------------|
 | returns `Promise<Object[]>` | An array of records |
 | throws `Error('Not connected')` | You didn't use `login` before using this method |
+| throws `Error('Unable to parse DNS records ...')` | There was an error with the parsing code. A copy of the HTML is provided to debug or report the error (remove any sensitive data first) |
 | throws `AxiosError()` | Underlying HTTP error |
 
 ------
