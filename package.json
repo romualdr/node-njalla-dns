@@ -1,6 +1,6 @@
 {
   "name": "njalla-dns",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Manipulate your njalla domains programmatically",
   "main": "index.js",
   "scripts": {
