@@ -7,7 +7,7 @@
     "test": "ava"
   },
   "dependencies": {
-    "axios": "^0.19.1",
+    "axios": "^0.21.1",
     "axios-cookiejar-support": "^0.5.1",
     "cheerio": "^1.0.0-rc.3"
   },
