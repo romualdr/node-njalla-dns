@@ -1,6 +1,6 @@
 # node-njalla-dns
 
-Manipulate your njalla domains programmatically.
+njal.la node.js API client. Manipulate your njalla domains programmatically.
 Now using official nja.la API 🎉
 
 ```javascript
