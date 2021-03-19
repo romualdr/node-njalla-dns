@@ -1,15 +1,13 @@
 {
   "name": "njalla-dns",
-  "version": "1.0.6",
+  "version": "2.0.0",
   "description": "Manipulate your njalla domains programmatically",
   "main": "index.js",
   "scripts": {
     "test": "ava"
   },
   "dependencies": {
-    "axios": "^0.19.1",
-    "axios-cookiejar-support": "^0.5.1",
-    "cheerio": "^1.0.0-rc.3"
+    "axios": "^0.21.1"
   },
   "author": {
     "name": "Romuald R. (romualdr)",

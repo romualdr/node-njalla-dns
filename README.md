@@ -1,27 +1,36 @@
 # node-njalla-dns
 
 Manipulate your njalla domains programmatically.
+Now using official nja.la API 🎉
 
 ```javascript
-const { login, getDomains, add } = require('njalla-dns')
+const njalla = require('njalla-dns')
 
 ;(async function main() {
-    // You have to call login once before using other methods
-    // - initializes cookies needed to manipulate your domain -
-    await login('my_super_email@gmail.com', 'creazy_password')
+    // Initialize your client with your API key (You can grab one at njal.la/settings/api/)
+    const dns = njalla('131ecf5e2090419e8bfd94f71d612ddc')
     
     // Get domains for the connected accounts
-    const domains = await getDomains() // [ 'romualdr.io' ]
+    const domains = await dns.getDomains() // [ { name: 'romualdr.io', status: 'active', expiry: '2020-02-10T12:15:46Z' } ]
 
     // Add an entry
-    await add(domains[0], 'A', 'www', '192.168.10.0', 3600)
+    await dns.add(domains[0], 'A', 'www', '192.168.10.0', 3600)
+
+    // Update an entry
+    await dns.update(domains[0], 'www', { 'content': '192.168.10.1' })
+    
+    // Remove this entry
+    await dns.remove(domains[0], 'www')
+
+    // Print all your records for a domain
+    console.log(await dns.getRecords(domains[0]))
 })()
 ```
 
-## Installation
+## Getting Started
 
-`npm i njalla-dns`
-
+- Go to [njal.la/settings/api/](https://njal.la/settings/api/) to grab an API key
+- `npm i njalla-dns`
 
 ## Features
 
@@ -35,29 +44,26 @@ const { login, getDomains, add } = require('njalla-dns')
 
 ## Documentation
 
-### login(username, password)
+### njalla(key)
 
-Initialize the connection with njalla and store cookies needed to manipulate records.
+Initialize the connection with njalla.
 
 | parameter | type | description | example |
 |-----------|------|-------------|---------|
-| `username` | string | Email or username used to login in njalla (string) | `'romualdr@github.com'` | 
-| `password` | string | Password used to login in njalla (string) | `'mysupersecretpassword'` | 
+| `key` | string | An API key (string) | `'131ecf5e2090419e8bfd94f71d612ddc'` | 
 
 ```javascript
-const { login } = require('njalla-dns')
+const njalla = require('njalla-dns')
 
 ;(async function main() {
-    // You have to call login once before using other methods
-    // - initializes cookies needed to manipulate your domain -
-    await login('my_super_email@gmail.com', 'creazy_password')
+    // Initialize your client with your API key (You can grab one at njal.la/settings/api/)
+    await njalla('131ecf5e2090419e8bfd94f71d612ddc')
 })()
 ```
 
 | signature | description |
 |-----------|-------------|
-| returns `Promise<void>` |  |
-| throws `Error('Unable to login')` | Incorrect credentials |
+| returns an object with all methods |  |
 
 ------
 
@@ -66,20 +72,20 @@ const { login } = require('njalla-dns')
 Retrieves domains attached to the connected account
 
 ```javascript
-const { login, getDomains } = require('njalla-dns')
+const njalla = require('njalla-dns')
 
 ;(async function main() {
-    // ... login ...
+    // initialize
+    const dns = await njalla('131ecf5e2090419e8bfd94f71d612ddc')
     
     // Get domains
-    const domains = await getDomains() // [ 'mydomain.io' ]
+    const domains = await dns.getDomains() // [ { name: 'romualdr.io', status: 'active', expiry: '2020-02-10T12:15:46Z' } ]
 })()
 ```
 
 | signature | description |
 |-----------|-------------|
-| returns `Promise<string[]>` | An array of string containing your domains |
-| throws `Error('Not connected')` | You didn't use `login` before using this method |
+| returns `Promise<domain[]>` | An array of domains |
 | throws `AxiosError()` | Underlying HTTP error |
 
 ------
@@ -88,23 +94,25 @@ const { login, getDomains } = require('njalla-dns')
 
 | parameter | type | description | example |
 |-----------|------|-------------|---------|
-| `domain` | string | Domains for which you want to retrieve records | `'mydomain.io'` | 
+| `domain` | string or object | Domains for which you want to retrieve records | `'mydomain.io' or a domain object` | 
 
 ```javascript
-const { login, getRecords } = require('njalla-dns')
+const njalla = require('njalla-dns')
 
 ;(async function main() {
-    // ... login ...
+    // initialize
+    const dns = await njalla('131ecf5e2090419e8bfd94f71d612ddc')
     
-    const records = await getRecords('mydomain.io') // [ { type: 'A', content: '192.168.0.1', ttl: 3600, name: 'www' } ]
+    // Get domains
+    const domains = await dns.getRecords('mydomain.io') // [ { type: 'A', content: '192.168.0.1', ttl: 3600, name: 'www' } ]
 })()
 ```
 
 | signature | description |
 |-----------|-------------|
 | returns `Promise<Object[]>` | An array of records |
-| throws `Error('Not connected')` | You didn't use `login` before using this method |
-| throws `Error('Unable to parse DNS records ...')` | There was an error with the parsing code. A copy of the HTML is provided to debug or report the error (remove any sensitive data first) |
+| throws `Error('Invalid credentials. Please check your API key.')` | Invalid API key |
+| throws `Error('An error occured: error.')` | njal.la error |
 | throws `AxiosError()` | Underlying HTTP error |
 
 ------
@@ -122,20 +130,22 @@ const { login, getRecords } = require('njalla-dns')
 
 
 ```javascript
-const { login, add } = require('njalla-dns')
+const njalla = require('njalla-dns')
 
 ;(async function main() {
-    // ... login ...
+    // initialize
+    const dns = await njalla('131ecf5e2090419e8bfd94f71d612ddc')
     
     // ttl is optional (defaults to 10800)
-    await add('mydomain.io', 'A', 'www', '192.168.10.0', 3600)
+    await dns.add('mydomain.io', 'A', 'www', '192.168.10.0', 3600)
 })()
 ```
 
 | signature | description |
 |-----------|-------------|
-| returns `Promise<void>` |  |
-| throws `Error('Not connected')` | You didn't use `login` before using this method |
+| returns `Promise<Object[]>` | An array of records after addition |
+| throws `Error('Invalid credentials. Please check your API key.')` | Invalid API key |
+| throws `Error('An error occured: error.')` | njal.la error |
 | throws `AxiosError()` | Underlying HTTP error |
 
 ------
@@ -146,31 +156,31 @@ const { login, add } = require('njalla-dns')
 | parameter | type | description | example |
 |-----------|------|-------------|---------|
 | `domain` | string | the domain you want to add a record on | `'mydomain.io'` |
-| `record` | object | Record retrieved from `getRecords(domain)` you want to remove | `{ id: 150, name: 'www', type: 'A' }` |
+| `record` | object or string | Record name or object from `getRecords(domain)` | `{ id: 150, name: 'www', type: 'A' }` |
 
 
 ```javascript
-const { login, getRecords, remove } = require('njalla-dns')
+const njalla = require('njalla-dns')
 
 ;(async function main() {
-    // ... login ...
+    // initialize
+    const dns = await njalla('131ecf5e2090419e8bfd94f71d612ddc')
 
-    // get records for domains
-    const records = await getRecords('mydomain.io')
+    // Remove 'www' record
+    await dns.remove('mydomain.io', 'www')
 
-    // Remove first record
-    await remove('mydomain.io', records[0])
-
-    // Remove the www record
-    await remove(domains[0], records.find((r) => r.name === 'www'))
+    // alternatively - you can directly use a record for getRecords
+    const records = await dns.getRecords('mydomains.io')
+    await dns.remove('mydomain.io', records[0])
 })()
 ```
 
 | signature | description |
 |-----------|-------------|
-| returns `Promise<void>` |  |
-| throws `Error('Not connected')` | You didn't use `login` before using this method |
-| throws `Error('Unable to find record [id]')` | You should give a record you retrieved from `getRecords()` |
+| returns `Promise<Object[]>` | An array of records after removal |
+| throws `Error('No records matched the requested record.')` | Record doesn't exists |
+| throws `Error('Invalid credentials. Please check your API key.')` | Invalid API key |
+| throws `Error('An error occured: error.')` | njal.la error |
 | throws `AxiosError()` | Underlying HTTP error |
 
 ------
@@ -181,58 +191,44 @@ const { login, getRecords, remove } = require('njalla-dns')
 | parameter | type | description | example |
 |-----------|------|-------------|---------|
 | `domain` | string | the domain you want to add a record on | `'mydomain.io'` |
-| `record` | object | Record retrieved from `getRecords(domain)` you want to update | `{ id: 150, name: 'www', type: 'A' }` |
-| `update` | object | Update object | `{ name: 'njalla' }` |
-| `update.name` | optional, string | Update the name of the record | `{ name: 'njalla' }` |
-| `update.content` | optional, string | Update the content of the record | `{ content: '192.168.0.199' }` |
-| `update.ttl` | optional, number | Update the ttl of the record | `{ ttl: 3600 }` |
+| `record` | object or string | Record name or object from `getRecords(domain)` | `{ id: 150, name: 'www', type: 'A' }` |
+| `update` | object | Update object | `{ content: '192.168.0.199' }` |
+| `update.content` | optional, string | Update the content of the record | `'192.168.0.199'` |
 
 ```javascript
-const { login, getRecords, update } = require('njalla-dns')
+const njalla = require('njalla-dns')
 
 ;(async function main() {
-    // ... login ...
+    // initialize
+    const dns = await njalla('131ecf5e2090419e8bfd94f71d612ddc')
 
-    // get records for domains
+    // Get records
     const records = await getRecords('mydomain.io')
 
-    // Update the www record
+    // Update record
     await update('mydomain.io', records.find((r) => r.name === 'www'), { content: '192.168.10.199' })
+
+    // Alternatively - **please note** that this will fail if you have multiple records with the same name 
+    await update('mydomain.io', 'www', { content: '192.168.10.199' })
 })()
 ```
 
 | signature | description |
 |-----------|-------------|
-| returns `Promise<void>` |  |
-| throws `Error('Not connected')` | You didn't use `login` before using this method |
-| throws `Error('Unable to find record [id]')` | You should give a record you retrieved from `getRecords()` |
+| returns `Promise<Object[]>` | An array of records after update |
+| throws `Error('Too many record(s) found for this query. Please provide a more precise query')` | nja.la allows multiple times the same record - we need a more precise record input |
+| throws `Error('No record(s) found for this query. Please provide a more precise query')` | record not found |
+| throws `Error('Invalid credentials. Please check your API key.')` | Invalid API key |
+| throws `Error('An error occured: error.')` | njal.la error |
 | throws `AxiosError()` | Underlying HTTP error |
 
 ## Contributing
 
-Feel free to submit a pull request if you want to improve something, please proivide test suite as well if you change something.
+Feel free to submit a pull request if you want to improve something.
 
-We use [AVA](https://github.com/avajs/ava) to run tests. Simply run `npm run test` to run the test suite.
-
-Njal.la calls are mocked. You can add the HTML file you want to use for the tests in `tests/mocks` folder.
-
-```javascript
-test('getRecords: should parse complex records ( like DKIM with ; )', async t => {
-    // We mock the signin page (mandatory)
-    await mockedClient.addMock(mockedClient.GET_NJALLA_URL('/signin/'), 'signin.html')
-
-    // We then mock the call we want with a static file (must be present in tests/mocks)
-    // Warning: AVA runs mocks asynchronously - so make sure to change domain if you want to avoid
-    // test and mocks clashing when running tests
-    await mockedClient.addMock(mockedClient.GET_NJALLA_DOMAIN_URL('dkim.io'), 'getRecords.dkim.html')
-
-    // Run your test here !
-    await dns.login('', '')
-    const records = await dns.getRecords('dkim.io')
-    t.truthy(records.find((r) => r.name === 'myrecord'), 'Record was not found')
-})
-```
-
+Missing as of Mars 2021
+- tests
+- a lot of njal.la API functions
 ## Motivations
 
 I needed this to make another project - which will be available soon on GitHub aswell.
