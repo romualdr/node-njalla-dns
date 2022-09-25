@@ -19,7 +19,7 @@
     "url": "https://github.com/romualdr/node-njalla-dns.git"
   },
   "devDependencies": {
-    "ava": "^3.3.0"
+    "ava": "^4.3.3"
   },
   "ava": {
     "files": [
